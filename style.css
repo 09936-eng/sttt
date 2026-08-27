@@ -1,0 +1,141 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #050814;
+    color: #e0f7fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: #0a0f24;
+    border: 2px solid #00f0ff;
+    box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* หน้าต่าง Screen */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: centerนี่คือโค้ดทั้งหมดของเกม **LUMEN LOST – ผู้พิทักษ์แสง** ซึ่งออกแบบในรูปแบบเว็บแอปพลิเคชัน (HTML5 / Canvas / Pure JS) ที่รองรับทั้งหน้าจอคอมพิวเตอร์และมือถือ มีระบบสแกนวิทยาศาสตร์ ระบบลำแสง ฟิสิกส์ของแสง (การสะท้อน การหักเห การกระจายแสง ปริซึม และเลนส์) พร้อม UI สไตล์ Neon Sci-Fi
+
+---
+
+### 1. `index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>LUMEN LOST – ผู้พิทักษ์แสง</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- หน้าเมนูหลัก (Main Menu) -->
+        <div id="main-menu" class="screen active">
+            <div class="scifi-bg"></div>
+            <div class="menu-content">
+                <h1 class="logo-title">LUMEN LOST</h1>
+                <p class="logo-subtitle">ผู้พิทักษ์แสงแห่ง LUMEN CITY</p>
+                
+                <div class="menu-buttons">
+                    <button id="btn-start" class="btn-sci">เริ่มต้นการเดินทาง</button>
+                    <button id="btn-select-level" class="btn-sci">เลือกด่าน</button>
+                    <button id="btn-how-to" class="btn-sci">วิธีเล่น</button>
+                    <button id="btn-audio" class="btn-sci">เสียง: เปิด</button>
+                    <button id="btn-reset" class="btn-sci danger">รีเซ็ตเกม</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าเลือกด่าน (Level Select) -->
+        <div id="level-menu" class="screen">
+            <h2>เลือกสถานีพลังงาน</h2>
+            <div class="level-grid" id="level-grid"></div>
+            <button id="btn-back-menu" class="btn-sci">กลับเมนูหลัก</button>
+        </div>
+
+        <!-- หน้าวิธีเล่น (How to Play) -->
+        <div id="howto-menu" class="screen">
+            <h2>คู่มือปฏิบัติการ</h2>
+            <div class="instructions">
+                <p>💡 <strong>เป้าหมาย:</strong> ฟื้นฟูพลังงานให้ LUMEN CITY โดยใช้หลักการทางออพติกส์ (แสง)</p>
+                <p>🕹️ <strong>การควบคุม (PC):</strong> ใช้ W, A, S, D หรือ ปุ่มลูกศรในการเคลื่อนที่</p>
+                <p>📱 <strong>การควบคุม (Mobile):</strong> ใช้ D-Pad บนหน้าจอ</p>
+                <p>🔍 <strong>การปฏิสัมพันธ์:</strong> กดปุ่ม 'สแกน' เพื่อตรวจสอบวัตถุวิทยาศาสตร์ และกด 'หมุน' เมื่ออยู่ใกล้กระจกหรือเลนส์</p>
+            </div>
+            <button id="btn-back-howto" class="btn-sci">กลับ</button>
+        </div>
+
+        <!-- หน้าจอขณะเล่นเกม (Game Screen) -->
+        <div id="game-screen" class="screen">
+            <!-- HUD แสดงข้อมูล -->
+            <div id="hud">
+                <div class="hud-item">ด่าน: <span id="hud-level">1</span></div>
+                <div class="hud-item">LUMEN ENERGY: <span id="hud-energy">0</span></div>
+                <div class="hud-item">คะแนน: <span id="hud-score">0</span></div>
+                <div class="hud-item">เวลา: <span id="hud-timer">00:00</span></div>
+            </div>
+
+            <!-- กล่องคำแนะนำจาก AI Assistant -->
+            <div id="ai-assistant">
+                <div class="ai-avatar">🤖 NOVA-AI</div>
+                <div id="ai-text">เตรียมพร้อมสำหรับการฟื้นฟูระบบพลังงานแสง...</div>
+            </div>
+
+            <!-- Canvas แสดงผลตัวเกม -->
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- ปุ่มควบคุมสำหรับมือถือ (Mobile Controls) -->
+            <div id="mobile-controls">
+                <div class="dpad">
+                    <button id="btn-up" class="btn-pad">▲</button>
+                    <div class="dpad-mid">
+                        <button id="btn-left" class="btn-pad">◄</button>
+                        <button id="btn-right" class="btn-pad">►</button>
+                    </div>
+                    <button id="btn-down" class="btn-pad">▼</button>
+                </div>
+                <div class="action-btns">
+                    <button id="btn-action-rotate" class="btn-act">🔄 หมุน</button>
+                    <button id="btn-action-scan" class="btn-act">🔍 สแกน</button>
+                    <button id="btn-action-hint" class="btn-act">💡 ใบ้ (-10)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal แสดงผลสแกนวิทยาศาสตร์ -->
+        <div id="scan-modal" class="modal">
+            <div class="modal-content">
+                <h3 id="scan-title">ข้อมูลวัตถุ</h3>
+                <p id="scan-desc">รายละเอียดทางวิทยาศาสตร์...</p>
+                <button id="btn-close-scan" class="btn-sci">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
