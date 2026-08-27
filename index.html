@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>LUMEN LOST – ผู้พิทักษ์แสง</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- หน้าเมนูหลัก -->
+        <div id="main-menu" class="screen active">
+            <div class="glow-bg"></div>
+            <h1 class="game-title">LUMEN LOST<br><span>ผู้พิทักษ์แสง</span></h1>
+            <div class="menu-buttons">
+                <button id="btn-start" class="btn">เริ่มเกม</button>
+
+                <button id="btn-select-level" class="btn">เลือกด่าน</button>
+
+                <button id="btn-how-to" class="btn">วิธีเล่น</button>
+
+                <button id="btn-sound" class="btn">เสียง: <span id="sound-status">เปิด</span></button>
+
+                <button id="btn-reset" class="btn btn-danger">รีเซ็ตเกม</button>
+
+            </div>
+        </div>
+
+        <!-- หน้าเลือกด่าน -->
+        <div id="level-menu" class="screen hidden">
+            <h2>เลือกด่าน</h2>
+            <div class="level-grid">
+                <button class="level-btn" data-level="1">1. Shadow Awakening</button>
+
+                <button class="level-btn" data-level="2">2. Mirror Maze</button>
+
+                <button class="level-btn" data-level="3">3. Refraction Lab</button>
+
+                <button class="level-btn" data-level="4">4. Prism Code</button>
+
+                <button class="level-btn" data-level="5">5. Lens Dimension</button>
+
+                <button class="level-btn" data-level="6">6. Optical Core</button>
+
+            </div>
+            <button id="btn-back-menu" class="btn">กลับหน้าหลัก</button>
+
+        </div>
+
+        <!-- หน้าวิธีเล่น -->
+        <div id="howto-screen" class="screen hidden">
+            <h2>วิธีเล่น & หลักการวิทยาศาสตร์</h2>
+            <div class="howto-content">
+                <p>💡 <b>ภารกิจ:</b> เดินทางแก้ไขระบบพลังงานแสงเพื่อฟื้นฟูเมือง LUMEN CITY!</p>
+                <p>🕹️ <b>การบังคับ:</b> ใช้ WASD / ปุ่มทิศทางบนหน้าจอ เพื่อเดิน</p>
+                <p>🔍 <b>สแกน:</b> กดปุ่ม [สแกน] เพื่ออ่านความรู้วิทยาศาสตร์จากวัตถุ</p>
+                <p>🔄 <b>โต้ตอบ:</b> คลิกหรือแตะที่ กระจก/เลนส์/ปริซึม เพื่อหมุนหรือปรับแต่งทิศทางแสง</p>
+            </div>
+            <button id="btn-back-howto" class="btn">กลับ</button>
+
+        </div>
+
+        <!-- หน้าจอการเล่นเกม -->
+        <div id="game-screen" class="screen hidden">
+            <!-- แผงข้อมูลด้านบน (HUD) -->
+            <div id="hud">
+                <div>ด่าน: <span id="hud-level-name">1</span></div>
+                <div>พลังงาน: <span id="hud-energy">0</span> ⚡</div>
+                <div>คะแนน: <span id="hud-score">0</span></div>
+                <div>เวลา: <span id="hud-timer">00:00</span></div>
+            </div>
+
+            <!-- พื้นที่แสดงเกม Canvas -->
+            <div id="canvas-wrapper">
+                <canvas id="gameCanvas" width="800" height="600"></canvas>
+            </div>
+
+            <!-- กล่องข้อความ AI Assistant & Scanner -->
+            <div id="ai-assistant">
+                <div class="ai-avatar">🤖 AI</div>
+                <div id="ai-text">ระบบพร้อมใช้งาน... เดินไปสำรวจจุดพลังงานกันเลย!</div>
+            </div>
+
+            <!-- แผงควบคุมสำหรับโทรศัพท์มือถือ -->
+            <div id="mobile-controls">
+                <div class="dpad">
+                    <button id="m-up" class="m-btn">▲</button>
+                    <div class="dpad-mid">
+                        <button id="m-left" class="m-btn">◄</button>
+                        <button id="m-down" class="m-btn">▼</button>
+                        <button id="m-right" class="m-btn">►</button>
+                    </div>
+                </div>
+                <div class="action-btns">
+                    <button id="m-scan" class="m-btn action">🔍 สแกน</button>
+
+                    <button id="m-interact" class="m-btn action">🔄 หมุน/ใช้</button>
+
+                    <button id="m-hint" class="m-btn action">💡 ใบ้</button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าจอจบด่าน / ชัยชนะ -->
+        <div id="victory-screen" class="screen hidden">
+            <h1 class="victory-title">ภารกิจสำเร็จ!</h1>
+            <p id="victory-detail">คุณปลดล็อกพลังงานให้ LUMEN CITY เรียบร้อยแล้ว!</p>
+            <div class="final-score">คะแนนสุทธิ: <span id="final-score-val">0</span></div>
+            <button id="btn-next-level" class="btn">ด่านถัดไป</button>
+
+            <button id="btn-victory-menu" class="btn">กลับหน้าหลัก</button>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
